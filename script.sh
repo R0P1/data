@@ -8,7 +8,8 @@ keluar(){
 
 read -p "[$] Masukkan nama file yang ingin dienkripsi: " nfa
 if [ -f "$nfa" ]; then
-  nfe="${nfa}.RF"
+  enfa=$(echo base64 "${nfa}")
+  nfe="${enfa}.RF"
   base64 "$nfa" > "$nfe"
   echo "[+] File $nfa telah dienkripsi."
   keluar

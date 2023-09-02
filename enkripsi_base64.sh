@@ -2,7 +2,7 @@
 
 keluar(){
   echo ""
-  read -p "Tekan Enter untuk keluar."
+  read -p "Tekan Enter untuk m."
   echo ""
 }
 

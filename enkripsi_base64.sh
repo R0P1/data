@@ -2,8 +2,9 @@
 
 keluar(){
   echo ""
-  read -p "Tekan Enter untuk m."
+  read -p "Tekan Enter untuk keluar."
   echo ""
+  exit 0
 }
 
 read -p "[$] Masukkan nama file yang ingin dienkripsi: " nfa

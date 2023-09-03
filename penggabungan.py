@@ -1,11 +1,31 @@
-from moviepy.editor import VideoFileClip
-from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
-from moviepy.video.tools.subtitles import SubtitlesClip
+import subprocess
+import re
+import json
 
-file_video = input("Masukkan nama file video: ")
-file_subtitle = input("Masukkan nama file subtitle: ")
-file_keluaran = input("Masukkan nama file keluaran: ")
-video_klip = VideoFileClip(file_video)
-subtitle = SubtitlesClip(file_subtitle)
-penggabungan = video_klip.set_subtitles(subtitle)
-penggabungan.write_videofile(f"{file_keluarana}", codec="libx264")
+command_output = subprocess.run(["netsh", "wlan", "show", "profiles"], capture_output=True).stdout.decode()
+
+profile_names = re.findall("All User Profile     : (.*)\r", command_output)
+
+wifi_list = []
+
+if len(profile_names) != 0:
+    for name in profile_names:
+        wifi_profile = {}
+        profile_info = subprocess.run(["netsh", "wlan", "show", "profile", name], capture_output=True).stdout.decode()
+        if re.search("Security key           : Absent", profile_info):
+            continue
+        else:
+            wifi_profile["ssid"] = name
+            profile_info_pass = subprocess.run(["netsh", "wlan", "show", "profile", name, "key=clear"], capture_output=True).stdout.decode()
+            password = re.search("Key Content            : (.*)\r", profile_info_pass)
+            if password == None:
+                wifi_profile["password"] = None
+            else:
+                wifi_profile["password"] = password[1]
+            wifi_list.append(wifi_profile)
+
+# Mengkonversi wifi_list menjadi format JSON
+json_output = json.dumps(wifi_list, indent=4)
+
+# Menampilkan JSON
+print(json_output)

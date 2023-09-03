@@ -4,7 +4,7 @@ import json
 
 hasil_perintah = subprocess.run(["netsh", "wlan", "show", "profiles"], capture_output=True).stdout.decode()
 
-nama_profil = re.findall("Profil Semua Pengguna     : (.*)\r", hasil_perintah)
+nama_profil = re.findall("All User Profile     : (.*)\r", hasil_perintah)
 
 daftar_wifi = []
 
@@ -12,12 +12,12 @@ if len(nama_profil) != 0:
     for nama in nama_profil:
         profil_wifi = {}
         info_profil = subprocess.run(["netsh", "wlan", "show", "profil", nama], capture_output=True).stdout.decode()
-        if re.search("Kunci Keamanan           : Tidak Ada", info_profil):
+        if re.search("Security key           : Absent", info_profil):
             continue
         else:
             profil_wifi["ssid"] = nama
             info_kunci_pass = subprocess.run(["netsh", "wlan", "show", "profil", nama, "key=clear"], capture_output=True).stdout.decode()
-            kata_sandi = re.search("Konten Kunci            : (.*)\r", info_kunci_pass)
+            kata_sandi = re.search("Key Content            : (.*)\r", info_kunci_pass)
             if kata_sandi == None:
                 profil_wifi["kata_sandi"] = None
             else:

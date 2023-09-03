@@ -1,5 +1,6 @@
 import subprocess
 import re
+import json
 
 command_output = subprocess.run(["netsh", "wlan", "show", "profiles"], capture_output=True).stdout.decode()
 
@@ -23,8 +24,8 @@ if len(profile_names) != 0:
                 wifi_profile["password"] = password[1]
             wifi_list.append(wifi_profile)
 
-for wifi_profile in wifi_list:
-    print(f"SSID: {wifi_profile['ssid']}")
-    print(f"Password: {wifi_profile['password']}")
-    print()
-    
+# Mengkonversi wifi_list menjadi format JSON
+json_output = json.dumps(wifi_list, indent=4)
+
+# Menampilkan JSON
+print(json_output)

@@ -2,30 +2,30 @@ import subprocess
 import re
 import json
 
-command_output = subprocess.run(["netsh", "wlan", "show", "profiles"], capture_output=True).stdout.decode()
+hasil_perintah = subprocess.run(["netsh", "wlan", "show", "profiles"], capture_output=True).stdout.decode()
 
-profile_names = re.findall("All User Profile     : (.*)\r", command_output)
+nama_profil = re.findall("Profil Semua Pengguna     : (.*)\r", hasil_perintah)
 
-wifi_list = []
+daftar_wifi = []
 
-if len(profile_names) != 0:
-    for name in profile_names:
-        wifi_profile = {}
-        profile_info = subprocess.run(["netsh", "wlan", "show", "profile", name], capture_output=True).stdout.decode()
-        if re.search("Security key           : Absent", profile_info):
+if len(nama_profil) != 0:
+    for nama in nama_profil:
+        profil_wifi = {}
+        info_profil = subprocess.run(["netsh", "wlan", "show", "profil", nama], capture_output=True).stdout.decode()
+        if re.search("Kunci Keamanan           : Tidak Ada", info_profil):
             continue
         else:
-            wifi_profile["ssid"] = name
-            profile_info_pass = subprocess.run(["netsh", "wlan", "show", "profile", name, "key=clear"], capture_output=True).stdout.decode()
-            password = re.search("Key Content            : (.*)\r", profile_info_pass)
-            if password == None:
-                wifi_profile["password"] = None
+            profil_wifi["ssid"] = nama
+            info_kunci_pass = subprocess.run(["netsh", "wlan", "show", "profil", nama, "key=clear"], capture_output=True).stdout.decode()
+            kata_sandi = re.search("Konten Kunci            : (.*)\r", info_kunci_pass)
+            if kata_sandi == None:
+                profil_wifi["kata_sandi"] = None
             else:
-                wifi_profile["password"] = password[1]
-            wifi_list.append(wifi_profile)
+                profil_wifi["kata_sandi"] = kata_sandi[1]
+            daftar_wifi.append(profil_wifi)
 
-# Mengkonversi wifi_list menjadi format JSON
-json_output = json.dumps(wifi_list, indent=4)
+# Mengkonversi daftar_wifi menjadi format JSON
+json_hasil = json.dumps(daftar_wifi, indent=4)
 
 # Menampilkan JSON
-print(json_output)
+print(json_hasil)

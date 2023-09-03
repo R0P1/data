@@ -23,6 +23,8 @@ if len(profile_names) != 0:
                 wifi_profile["password"] = password[1]
             wifi_list.append(wifi_profile)
 
-for x in range(len(wifi_list)):
-    print(wifi_list[x])
+for wifi_profile in wifi_list:
+    print(f"SSID: {wifi_profile['ssid']}")
+    print(f"Password: {wifi_profile['password']}")
+    print()
     
